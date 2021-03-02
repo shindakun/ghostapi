@@ -43,17 +43,17 @@ func NewClient(domain, ver, k string) *Client {
 	}
 }
 
-// Get returns an http.Request ready to use
-func (c *Client) Get(url string) (*http.Request, error) {
+// Get returns []byte
+func (c *Client) Get(url string) ([]byte, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return req, nil
+	return c.Do(req)
 }
 
-// Do returns the cx
+// Do returns []byte, uses c.Page for paging
 func (c *Client) Do(r *http.Request) ([]byte, error) {
 	if c.Page > 1 {
 		i := strconv.Itoa(c.Page)
