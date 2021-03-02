@@ -50,11 +50,11 @@ func (c *Client) Get(url string) ([]byte, error) {
 		return nil, err
 	}
 
-	return c.Do(req)
+	return c.do(req)
 }
 
 // Do returns []byte, uses c.Page for paging
-func (c *Client) Do(r *http.Request) ([]byte, error) {
+func (c *Client) do(r *http.Request) ([]byte, error) {
 	if c.Page > 1 {
 		i := strconv.Itoa(c.Page)
 		q := r.URL.Query()
