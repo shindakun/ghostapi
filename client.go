@@ -9,28 +9,31 @@ import (
 
 var (
 
-	// BaseURL to start, https or die
+	// BaseURL to start
 	BaseURL = "https://%s"
 
-	//APIPath is the default Ghost API path without the version number
+	//APIPath is the default Ghost API path for posts without the version number
 	APIPath = "/ghost/api/%s/content/posts/"
 
 	//LatestAPI is the currently supported version
 	LatestAPI = "v3"
 )
 
+func makeURL(domain, ver, k string) string {
+	if ver == "" {
+		ver = LatestAPI
+	}
+	host := fmt.Sprintf(BaseURL, domain)
+	path := fmt.Sprintf(APIPath, ver)
+	url := fmt.Sprintf("%s%s?key=%s", host, path, k)
+	return url
+}
+
 // Client struct
 type Client struct {
 	URL    string
 	APIKey string
 	Page   int
-}
-
-func makeURL(domain, ver, k string) string {
-	host := fmt.Sprintf(BaseURL, domain)
-	path := fmt.Sprintf(APIPath, ver)
-	url := fmt.Sprintf("%s%s?key=%s", host, path, k)
-	return url
 }
 
 // NewClient takes a domain name, API version, and API key strings and returns a *Client
@@ -49,7 +52,6 @@ func (c *Client) Get(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return c.do(req)
 }
 
@@ -66,7 +68,6 @@ func (c *Client) do(r *http.Request) ([]byte, error) {
 		return nil, err
 	}
 
-	fmt.Println(r.URL.String())
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
